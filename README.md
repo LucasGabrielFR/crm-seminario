@@ -2,7 +2,15 @@
 
 Um sistema moderno de gestão para seminários, focado em centralizar informações acadêmicas, de biblioteca e gestão de pessoas, com uma interface otimizada para dispositivos móveis e desktop.
 
-## 🚀 Tecnologias
+### Configuração de Ambiente
+
+Para rodar o projeto localmente, você precisa configurar as variáveis de ambiente do Supabase:
+
+1.  Crie um arquivo chamado `.env` na raiz do projeto.
+2.  Copie o conteúdo de `.env.example` para o seu `.env`.
+3.  Preencha com o seu **URL do Supabase** e sua **Anon Key** (disponíveis no painel do Supabase em Project Settings > API).
+
+### Execução Local
 
 - **Frontend**: [Vite](https://vitejs.dev/) + [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
 - **Estilização**: [Tailwind CSS](https://tailwindcss.com/)
