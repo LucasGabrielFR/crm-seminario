@@ -4,6 +4,7 @@ import { LoginPage } from './features/auth/LoginPage';
 import { Layout } from './components/Layout';
 import { PeoplePage } from './features/users/PeoplePage';
 import { LibraryPage } from './features/library/LibraryPage';
+import { AcademicPage } from './features/academic/AcademicPage';
 
 // Placeholder for Dashboard
 const Dashboard = () => (
@@ -83,6 +84,19 @@ function App() {
             session ? (
               <Layout>
                 <LibraryPage />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } 
+        />
+
+        <Route 
+          path="/academic" 
+          element={
+            session ? (
+              <Layout>
+                <AcademicPage />
               </Layout>
             ) : (
               <Navigate to="/login" />

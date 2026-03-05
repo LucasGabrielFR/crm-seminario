@@ -8,7 +8,8 @@ import {
   X,
   Sun,
   Moon,
-  BookOpen
+  BookOpen,
+  GraduationCap
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useTheme } from '../hooks/useTheme';
@@ -36,6 +37,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Pessoas', path: '/users', icon: Users },
     { name: 'Biblioteca', path: '/library', icon: BookOpen },
+    { name: 'Acadêmico', path: '/academic', icon: GraduationCap },
   ];
 
   const isActive = (path: string) => location.pathname === path;

@@ -96,7 +96,7 @@ src/
 
 ## 5. Próximos Passos Imediatos
 1. [x] Tema Dark/Light.
-2. [ ] Implementar edição de perfil (Nome e Telefone).
-3. [ ] Criar modal de troca de senha.
-4. [ ] Iniciar estrutura das tabelas de Biblioteca no Supabase.
-5. [ ] Desenvolver listagem inicial de livros.
+2. [x] Implementar edição de perfil (Nome e Telefone).
+3. [x] Criar modal de troca de senha.
+4. [x] Iniciar estrutura das tabelas de Biblioteca no Supabase.
+5. [x] Desenvolver listagem inicial de livros.
