@@ -12,6 +12,8 @@ import {
 import { supabase } from '../lib/supabase';
 import { useTheme } from '../hooks/useTheme';
 import packageJson from '../../package.json';
+import { ChangePasswordModal } from './ChangePasswordModal';
+import { Settings } from 'lucide-react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,6 +21,7 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = React.useState(false);
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
@@ -93,6 +96,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               )}
             </button>
             <button
+              onClick={() => setIsPasswordModalOpen(true)}
+              className="w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
+            >
+              <Settings className="w-5 h-5 mr-3 text-primary" />
+              Alterar Senha
+            </button>
+            <button
               onClick={handleLogout}
               className="w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all duration-200"
             >
@@ -107,6 +117,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
       </aside>
+
+      <ChangePasswordModal 
+        isOpen={isPasswordModalOpen} 
+        onClose={() => setIsPasswordModalOpen(false)} 
+      />
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto bg-background/50 dark:bg-background pb-20 md:pb-0">

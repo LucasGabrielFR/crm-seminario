@@ -5,6 +5,19 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-03-04
+
+### Adicionado
+- **Gestão de Usuários (Admin)**: Implementado CRUD completo (Criar, Editar, Excluir) de membros através da Dashboard de Pessoas.
+- **Senha via CPF**: Novos usuários agora têm o CPF (apenas números) como senha inicial padrão.
+- **Gestão de Senhas**: Adicionado modal de alteração de senha acessível para todos os usuários logados.
+- **Edge Function Segura**: Implementada função `admin-create-user` para gerenciar usuários via Service Role, permitindo que administradores criem/editem contas sem encerrar sua própria sessão.
+- **Campos Adicionais**: CPF e E-mail adicionados à tabela de `profiles` para melhor rastreabilidade e exibição.
+
+### Alterado
+- **Interface de Gestão**: Tabela de pessoas aprimorada com busca por e-mail, ícones de ação (Editar/Excluir) e estados de carregamento.
+- **Fluxo de Autenticação**: Melhoria no tratamento de erros de sessão e validação manual de JWT nas Edge Functions para contornar problemas de cache de token.
+
 ## [1.0.1] - 2026-03-04
 
 ### Adicionado
