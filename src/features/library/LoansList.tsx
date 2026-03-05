@@ -1,10 +1,22 @@
 import React from 'react';
 import { useBookLoans, useReturnBook } from './useLibrary';
 import { Calendar, User, Clock, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
-export const LoansList: React.FC = () => {
+interface LoansListProps {
+  onlySelf?: boolean;
+}
+
+export const LoansList: React.FC<LoansListProps> = ({ onlySelf }) => {
+  const { user, profile } = useAuth();
   const { data: loans, isLoading } = useBookLoans();
   const returnBook = useReturnBook();
+
+  const isLibrarian = profile?.is_librarian || profile?.role === 'admin';
+
+  const filteredLoans = onlySelf 
+    ? loans?.filter(l => l.user_id === user?.id)
+    : loans;
 
   if (isLoading) {
     return (
@@ -39,14 +51,14 @@ export const LoansList: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {loans?.length === 0 ? (
+            {filteredLoans?.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-8 py-20 text-center text-muted-foreground font-medium italic">
                   Nenhum registro de empréstimo.
                 </td>
               </tr>
             ) : (
-              loans?.map((loan) => (
+              filteredLoans?.map((loan) => (
                 <tr key={loan.id} className="group hover:bg-muted/40 transition-colors">
                   <td className="px-8 py-5">
                     <div className="flex flex-col">
@@ -88,7 +100,7 @@ export const LoansList: React.FC = () => {
                     </span>
                   </td>
                   <td className="px-8 py-5 text-right">
-                    {loan.status !== 'returned' && (
+                    {loan.status !== 'returned' && isLibrarian && (
                       <button 
                         onClick={() => handleReturn(loan.id)}
                         className="flex items-center gap-2 ml-auto px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold hover:bg-primary hover:text-primary-foreground transition-all"
@@ -101,6 +113,9 @@ export const LoansList: React.FC = () => {
                       <span className="text-[10px] font-bold text-muted-foreground/50">
                         Em {new Date(loan.return_date).toLocaleDateString()}
                       </span>
+                    )}
+                    {!isLibrarian && loan.status !== 'returned' && (
+                        <span className="text-[10px] font-bold text-blue-600 italic">Em sua posse</span>
                     )}
                   </td>
                 </tr>

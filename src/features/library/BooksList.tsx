@@ -4,10 +4,11 @@ import { useBooks, Book } from './useLibrary';
 
 interface BooksListProps {
   onLoan: (bookId: string) => void;
-  onEdit: (book: Book) => void;
+  onEdit?: (book: Book) => void;
+  isLibrarian?: boolean;
 }
 
-export const BooksList: React.FC<BooksListProps> = ({ onLoan, onEdit }) => {
+export const BooksList: React.FC<BooksListProps> = ({ onLoan, onEdit, isLibrarian }) => {
   const { data: books, isLoading } = useBooks();
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -46,13 +47,15 @@ export const BooksList: React.FC<BooksListProps> = ({ onLoan, onEdit }) => {
         ) : (
           filteredBooks?.map((book) => (
             <div key={book.id} className="group bg-card rounded-3xl p-6 border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all flex flex-col h-full relative">
-              <button 
-                onClick={() => onEdit(book)}
-                className="absolute top-4 right-4 p-2 bg-muted/50 text-muted-foreground rounded-xl opacity-0 group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground transition-all z-10"
-                title="Editar Livro"
-              >
-                <Pencil className="w-4 h-4" />
-              </button>
+              {onEdit && (
+                <button 
+                  onClick={() => onEdit(book)}
+                  className="absolute top-4 right-4 p-2 bg-muted/50 text-muted-foreground rounded-xl opacity-0 group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground transition-all z-10"
+                  title="Editar Livro"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+              )}
 
               <div className="flex gap-4 mb-4">
                 <div className="w-20 h-28 bg-muted rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden border border-border group-hover:scale-105 transition-transform">
@@ -110,7 +113,9 @@ export const BooksList: React.FC<BooksListProps> = ({ onLoan, onEdit }) => {
                 className="mt-auto w-full flex items-center justify-center bg-muted text-foreground py-3 rounded-xl font-bold hover:bg-primary hover:text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <HandHelping className="w-4 h-4 mr-2" />
-                {book.available_quantity > 0 ? 'Emprestar' : 'Indisponível'}
+                {book.available_quantity > 0 
+                  ? (isLibrarian ? 'Emprestar' : 'Solicitar') 
+                  : 'Indisponível'}
               </button>
             </div>
           ))

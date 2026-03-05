@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useUsers } from './useUsers';
-import { Search, UserPlus, Filter, Pencil, Trash2, Loader2 } from 'lucide-react';
+import { Search, Filter, Pencil, Trash2, Loader2, Library as LibraryIcon, UserPlus } from 'lucide-react';
 import { AddUserModal } from './AddUserModal';
 import { EditUserModal } from './EditUserModal';
 import { supabase } from '../../lib/supabase';
@@ -137,8 +137,14 @@ export const PeoplePage: React.FC = () => {
                         <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-black mr-4 shadow-inner">
                           {profile.full_name?.charAt(0)}
                         </div>
-                        <span className="font-bold text-foreground group-hover:text-primary transition-colors">
+                        <span className="font-bold text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
                           {profile.full_name}
+                          {profile.is_librarian && (
+                            <span className="bg-primary/10 text-primary text-[8px] px-1.5 py-0.5 rounded font-black uppercase flex items-center gap-1">
+                              <LibraryIcon className="w-2.5 h-2.5" />
+                              Bibliotecário
+                            </span>
+                          )}
                         </span>
                       </div>
                     </td>

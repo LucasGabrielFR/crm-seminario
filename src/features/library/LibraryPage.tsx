@@ -1,23 +1,34 @@
 import React, { useState } from 'react';
-import { BookOpen, History, Plus, Library as LibraryIcon, Cloud } from 'lucide-react';
+import { BookOpen, History, Plus, Library as LibraryIcon, Cloud, MessageSquare } from 'lucide-react';
 import { AddBookModal } from './AddBookModal';
 import { EditBookModal } from './EditBookModal';
 import { LoanBookModal } from './LoanBookModal';
+import { RequestLoanModal } from './RequestLoanModal';
 import { BooksList } from './BooksList';
 import { LoansList } from './LoansList';
 import { VirtualLibrary } from './VirtualLibrary';
+import { RequestList } from './RequestList';
 import { Book } from './useLibrary';
+import { useAuth } from '../../hooks/useAuth';
 
 export const LibraryPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'books' | 'loans' | 'virtual'>('books');
+  const { profile } = useAuth();
+  const isLibrarian = profile?.is_librarian || profile?.role === 'admin';
+
+  const [activeTab, setActiveTab] = useState<'books' | 'loans' | 'virtual' | 'requests'>('books');
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
 
   const openLoanModal = (bookId: string) => {
     setSelectedBookId(bookId);
-    setIsLoanModalOpen(true);
+    if (isLibrarian) {
+      setIsLoanModalOpen(true);
+    } else {
+      setIsRequestModalOpen(true);
+    }
   };
 
   return (
@@ -28,17 +39,21 @@ export const LibraryPage: React.FC = () => {
             <LibraryIcon className="w-8 h-8 text-primary" />
             Biblioteca Essencial
           </h1>
-          <p className="text-muted-foreground font-medium mt-1">Gerencie o acervo e controle os empréstimos de livros.</p>
+          <p className="text-muted-foreground font-medium mt-1">
+            {isLibrarian ? 'Gerencie o acervo e controle os empréstimos.' : 'Consulte o acervo e solicite empréstimos.'}
+          </p>
         </div>
-        <div className="flex gap-3">
-          <button 
-            onClick={() => setIsAddBookModalOpen(true)}
-            className="flex items-center justify-center bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Novo Livro
-          </button>
-        </div>
+        {isLibrarian && (
+          <div className="flex gap-3">
+            <button 
+              onClick={() => setIsAddBookModalOpen(true)}
+              className="flex items-center justify-center bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Novo Livro
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Tabs */}
@@ -59,28 +74,41 @@ export const LibraryPage: React.FC = () => {
           }`}
         >
           <History className="w-4 h-4 mr-2" />
-          Empréstimos
+          {isLibrarian ? 'Todos Empréstimos' : 'Meus Empréstimos'}
         </button>
         <button
-          onClick={() => setActiveTab('virtual')}
+          onClick={() => setActiveTab('requests')}
           className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-            activeTab === 'virtual' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
+            activeTab === 'requests' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
-          <Cloud className="w-4 h-4 mr-2" />
-          Virtual
+          <MessageSquare className="w-4 h-4 mr-2" />
+          Solicitações
         </button>
+        {isLibrarian && (
+          <button
+            onClick={() => setActiveTab('virtual')}
+            className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+              activeTab === 'virtual' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Cloud className="w-4 h-4 mr-2" />
+            Virtual
+          </button>
+        )}
       </div>
 
       <div className="min-h-[400px]">
         {activeTab === 'books' && (
           <BooksList 
             onLoan={openLoanModal} 
-            onEdit={(book: Book) => setEditingBook(book)} 
+            onEdit={isLibrarian ? (book: Book) => setEditingBook(book) : undefined} 
+            isLibrarian={isLibrarian}
           />
         )}
-        {activeTab === 'loans' && <LoansList />}
-        {activeTab === 'virtual' && <VirtualLibrary />}
+        {activeTab === 'loans' && <LoansList onlySelf={!isLibrarian} />}
+        {activeTab === 'requests' && <RequestList onlySelf={!isLibrarian} />}
+        {activeTab === 'virtual' && isLibrarian && <VirtualLibrary />}
       </div>
 
       <AddBookModal isOpen={isAddBookModalOpen} onClose={() => setIsAddBookModalOpen(false)} />
@@ -93,6 +121,11 @@ export const LibraryPage: React.FC = () => {
         isOpen={isLoanModalOpen} 
         onClose={() => setIsLoanModalOpen(false)} 
         bookId={selectedBookId} 
+      />
+      <RequestLoanModal
+        isOpen={isRequestModalOpen}
+        onClose={() => setIsRequestModalOpen(false)}
+        bookId={selectedBookId}
       />
     </div>
   );

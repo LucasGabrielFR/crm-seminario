@@ -7,6 +7,7 @@ export interface Profile {
     email?: string;
     cpf?: string;
     role: 'admin' | 'formador' | 'seminarista' | 'professor';
+    is_librarian?: boolean;
     stage_id: string | null;
     avatar_url: string | null;
     formative_stages?: {

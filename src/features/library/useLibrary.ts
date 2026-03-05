@@ -23,6 +23,23 @@ export interface Book {
     }[];
 }
 
+export interface BookRequest {
+    id: string;
+    book_id: string;
+    user_id: string;
+    status: 'pending' | 'approved' | 'rejected' | 'fulfilled';
+    request_date: string;
+    response_date: string | null;
+    notes: string | null;
+    books?: {
+        title: string;
+        author: string;
+    };
+    profiles?: {
+        full_name: string;
+    };
+}
+
 export interface BookLoan {
     id: string;
     book_id: string;
@@ -205,5 +222,52 @@ export const useUpdateBook = () => {
             return book;
         },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['books'] }),
+    });
+};
+
+export const useBookRequests = () => {
+    return useQuery({
+        queryKey: ['book_requests'],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('book_requests')
+                .select('*, books(title, author), profiles(full_name)')
+                .order('request_date', { ascending: false });
+            if (error) throw error;
+            return data as BookRequest[];
+        },
+    });
+};
+
+export const useCreateRequest = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (request: Partial<BookRequest>) => {
+            const { data, error } = await supabase
+                .from('book_requests')
+                .insert(request)
+                .select()
+                .single();
+            if (error) throw error;
+            return data;
+        },
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['book_requests'] }),
+    });
+};
+
+export const useUpdateRequest = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, ...updates }: Partial<BookRequest> & { id: string }) => {
+            const { data, error } = await supabase
+                .from('book_requests')
+                .update({ ...updates, response_date: new Date().toISOString() })
+                .eq('id', id)
+                .select()
+                .single();
+            if (error) throw error;
+            return data;
+        },
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['book_requests'] }),
     });
 };

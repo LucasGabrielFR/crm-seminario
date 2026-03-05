@@ -5,6 +5,20 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-03-04
+
+### Adicionado
+- **Função de Bibliotecário**: Implementação de cargos específicos para gestão da biblioteca. Agora qualquer usuário pode ser promovido a Bibliotecário.
+- **Sistema de Solicitações**: Usuários regulares agora podem solicitar empréstimos de livros através de uma nova interface de solicitações.
+- **Fluxo de Aprovação**: Bibliotecários possuem uma aba exclusiva para gerenciar (aprovar/negar) solicitações de empréstimo.
+- **Controle de Acesso (RBAC)**: Restrição de funcionalidades sensíveis (edição de livros, devolução manual, biblioteca virtual) apenas para Bibliotecários e Admins.
+- **Aba de Solicitações**: Nova aba na biblioteca para que usuários acompanhem o status de seus pedidos (Aguardando, Aprovado/Para Retirada, Negado).
+- **Atribuição de Papel**: Adicionada opção nos modais de usuário (Novo/Editar) para atribuir a função de bibliotecário.
+
+### Alterado
+- **hooks de Autenticação**: O hook `useAuth` agora retorna o perfil completo do usuário, incluindo o status `is_librarian`.
+- **Segurança (RLS)**: Novas políticas de segurança no Supabase para proteger a tabela de solicitações e garantir que usuários vejam apenas seus dados.
+
 ## [1.2.0] - 2026-03-04
 
 ### Adicionado

@@ -19,6 +19,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onS
     full_name: '',
     cpf: '',
     role: 'seminarista',
+    is_librarian: false,
     stage_id: '',
   });
 
@@ -141,6 +142,18 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onS
                 <option value="professor">Professor</option>
                 <option value="admin">Administrador</option>
               </select>
+            </div>
+            <div className="flex items-center space-x-2 pt-6">
+              <input
+                type="checkbox"
+                id="is_librarian"
+                className="w-5 h-5 rounded border-border text-primary focus:ring-primary/20"
+                checked={formData.is_librarian}
+                onChange={e => setFormData({ ...formData, is_librarian: e.target.checked })}
+              />
+              <label htmlFor="is_librarian" className="text-sm font-bold text-muted-foreground cursor-pointer">
+                Atribuir função de Bibliotecário
+              </label>
             </div>
           </div>
 
