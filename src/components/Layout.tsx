@@ -7,7 +7,8 @@ import {
   Menu,
   X,
   Sun,
-  Moon
+  Moon,
+  BookOpen
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useTheme } from '../hooks/useTheme';
@@ -34,6 +35,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Pessoas', path: '/users', icon: Users },
+    { name: 'Biblioteca', path: '/library', icon: BookOpen },
   ];
 
   const isActive = (path: string) => location.pathname === path;

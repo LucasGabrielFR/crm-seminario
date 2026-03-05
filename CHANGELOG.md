@@ -5,6 +5,21 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-03-04
+
+### Adicionado
+- **Módulo de Biblioteca**: Lançamento completo do sistema de gestão de acervo físico e virtual.
+- **Multicategorias**: Suporte para que um livro pertença a várias categorias simultaneamente, com interface de seleção múltipla.
+- **Cadastro Dinâmico de Categorias**: Modal para criação de novas categorias com sistema de aviso inteligente contra duplicidade ou nomes semelhantes.
+- **Gestão de Acervo**: Interface estilo galeria para visualização de livros com busca, filtros e indicadores de localização física (estante).
+- **Controle de Empréstimos**: Fluxo para membros registrados e convidados externos, com cálculo automático de data de vencimento.
+- **Biblioteca Virtual**: Integração com repositório Google Drive para acesso rápido a PDFs e E-books.
+- **Edição de Livros**: Funcionalidade para editar metadados e categorias de livros existentes.
+
+### Alterado
+- **Lógica de Devolução**: Atualização automática da `available_quantity` e preenchimento da `return_date` no momento da entrega.
+- **Banco de Dados**: Nova estrutura de tabela de junção (`book_category_junction`) para permitir relações muitos-para-muitos entre livros e categorias.
+
 ## [1.1.0] - 2026-03-04
 
 ### Adicionado

@@ -3,6 +3,7 @@ import { useAuth } from './hooks/useAuth';
 import { LoginPage } from './features/auth/LoginPage';
 import { Layout } from './components/Layout';
 import { PeoplePage } from './features/users/PeoplePage';
+import { LibraryPage } from './features/library/LibraryPage';
 
 // Placeholder for Dashboard
 const Dashboard = () => (
@@ -69,6 +70,19 @@ function App() {
             session ? (
               <Layout>
                 <PeoplePage />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } 
+        />
+
+        <Route 
+          path="/library" 
+          element={
+            session ? (
+              <Layout>
+                <LibraryPage />
               </Layout>
             ) : (
               <Navigate to="/login" />
