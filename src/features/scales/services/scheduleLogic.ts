@@ -19,9 +19,16 @@ export const generateAutomaticScale = (
     if (roles.length === 0) throw new Error("Selecione ao menos uma função para a escala.");
     if (settings.daysOfWeek.length === 0) throw new Error("Selecione ao menos um dia da semana.");
 
+    // Track total workload for lifetime balancing
     const workload: Record<string, number> = {};
+    // Track when each person last did each role (week index)
+    const lastRoleOccurrence: Record<string, Record<string, number>> = {};
 
-    people.forEach(p => workload[p.id] = 0);
+    people.forEach(p => {
+        workload[p.id] = 0;
+        lastRoleOccurrence[p.id] = {};
+        roles.forEach(r => lastRoleOccurrence[p.id][r.id] = -999);
+    });
 
     for (let wIdx = 0; wIdx < settings.durationWeeks; wIdx++) {
         const weekDays: ScaleDay[] = [];
@@ -29,41 +36,34 @@ export const generateAutomaticScale = (
         for (const dayIdx of settings.daysOfWeek) {
             const assignments: ScaleAssignment[] = [];
 
-            roles.forEach(role => {
+            // Shuffle roles each day to avoid same priority order every time
+            const shuffledRoles = [...roles].sort(() => Math.random() - 0.5);
+
+            shuffledRoles.forEach(role => {
+                // Potential candidates who haven't worked today and haven't done THIS role this week
                 const candidates = [...people].filter(p => {
-                    // Rule: No multiple functions on the same day
                     const assignedToday = assignments.some(a => a.personId === p.id);
                     if (assignedToday) return false;
 
-                    // Rule: No same function in the same week
-                    for (const prevDay of weekDays) {
-                        const hasRole = prevDay.assignments.some(a => a.roleId === role.id && a.personId === p.id);
-                        if (hasRole) return false;
-                    }
+                    const doneThisRoleThisWeek = weekDays.some(d =>
+                        d.assignments.some(a => a.roleId === role.id && a.personId === p.id)
+                    );
+                    if (doneThisRoleThisWeek) return false;
 
                     return true;
                 });
 
-                // Let's count assignments for each person THIS WEEK to maximize rotation
-                const assignmentsThisWeek: Record<string, number> = {};
-                people.forEach(p => assignmentsThisWeek[p.id] = 0);
-
-                weekDays.forEach(d => {
-                    d.assignments.forEach(a => {
-                        assignmentsThisWeek[a.personId] = (assignmentsThisWeek[a.personId] || 0) + 1;
-                    });
-                });
-                assignments.forEach(a => {
-                    assignmentsThisWeek[a.personId] = (assignmentsThisWeek[a.personId] || 0) + 1;
-                });
-
+                // Sort candidates to maximize rotation
                 candidates.sort((a, b) => {
-                    const weekDiff = assignmentsThisWeek[a.id] - assignmentsThisWeek[b.id];
-                    if (weekDiff !== 0) return weekDiff;
+                    // 1. Prefer someone who hasn't done this role in the longest time
+                    const lastA = lastRoleOccurrence[a.id][role.id];
+                    const lastB = lastRoleOccurrence[b.id][role.id];
+                    if (lastA !== lastB) return lastA - lastB;
 
-                    const workDiff = workload[a.id] - workload[b.id];
-                    if (workDiff !== 0) return workDiff;
+                    // 2. Prefer lower total workload
+                    if (workload[a.id] !== workload[b.id]) return workload[a.id] - workload[b.id];
 
+                    // 3. Random fallback
                     return Math.random() - 0.5;
                 });
 
@@ -71,19 +71,21 @@ export const generateAutomaticScale = (
                     const selected = candidates[0];
                     assignments.push({ roleId: role.id, personId: selected.id });
                     workload[selected.id]++;
+                    lastRoleOccurrence[selected.id][role.id] = wIdx;
                 } else {
-                    // Fallback: relax "Same role per week" if strict list is empty
-                    const relaxCandidates = [...people].filter(p => {
+                    // Fallback: relax "same role this week" but still enforce "one role per day"
+                    const fallbackCandidates = [...people].filter(p => {
                         const assignedToday = assignments.some(a => a.personId === p.id);
                         return !assignedToday;
                     });
 
-                    relaxCandidates.sort((a, b) => workload[a.id] - workload[b.id]);
+                    fallbackCandidates.sort((a, b) => workload[a.id] - workload[b.id]);
 
-                    if (relaxCandidates.length > 0) {
-                        const selected = relaxCandidates[0];
+                    if (fallbackCandidates.length > 0) {
+                        const selected = fallbackCandidates[0];
                         assignments.push({ roleId: role.id, personId: selected.id });
                         workload[selected.id]++;
+                        lastRoleOccurrence[selected.id][role.id] = wIdx;
                     }
                 }
             });

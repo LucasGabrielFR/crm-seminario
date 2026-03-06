@@ -10,8 +10,8 @@ export const ScalesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('scales');
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+    <div className="space-y-8 animate-in fade-in duration-700 print:space-y-0">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 print:hidden">
         <div>
           <h1 className="text-4xl font-black tracking-tight text-foreground">Gerador de <span className="text-primary italic">Escalas</span></h1>
           <p className="text-muted-foreground font-medium mt-1">Gerencie membros, funções e gere escalas inteligentes automaticamente.</p>
@@ -48,7 +48,7 @@ export const ScalesPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-[2.5rem] p-8 shadow-sm">
+      <div className="bg-card border border-border rounded-[2.5rem] p-8 shadow-sm print:border-none print:shadow-none print:p-0 print:rounded-none">
         {activeTab === 'scales' && <SchedulesTab />}
         {activeTab === 'people' && <PeopleTab />}
         {activeTab === 'roles' && <RolesTab />}

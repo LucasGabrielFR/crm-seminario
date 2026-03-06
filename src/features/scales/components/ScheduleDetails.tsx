@@ -2,7 +2,7 @@
 import React from 'react';
 import { ScaleSchedule, ScaleWeek, ScaleDay, ScaleAssignment, ScalePerson, ScaleRole } from '../types';
 import { useScalePeople, useScaleRoles, useUpdateScaleAssignment } from '../useScales';
-import { ArrowLeft, Printer, User, Award, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Printer, User, Award, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 interface Props {
   schedule: ScaleSchedule;
@@ -19,6 +19,21 @@ export const ScheduleDetails: React.FC<Props> = ({ schedule, onBack }) => {
   };
 
   const getRoleName = (id: string) => roles?.find((r: ScaleRole) => r.id === id)?.name || "-";
+
+  // Collision detection functions
+  const hasDayCollision = (weekIdx: number, dayIdx: number, personId: string) => {
+    const day = schedule.weeks[weekIdx].days[dayIdx];
+    return day.assignments.filter(a => a.personId === personId).length > 1;
+  };
+
+  const hasWeekRoleCollision = (weekIdx: number, roleId: string, personId: string) => {
+    const week = schedule.weeks[weekIdx];
+    let occurrences = 0;
+    week.days.forEach(d => {
+      occurrences += d.assignments.filter(a => a.roleId === roleId && a.personId === personId).length;
+    });
+    return occurrences > 1;
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -46,6 +61,12 @@ export const ScheduleDetails: React.FC<Props> = ({ schedule, onBack }) => {
           <Printer className="w-5 h-5" />
           Imprimir Escala (PDF)
         </button>
+      </div>
+
+      {/* Print-only Header */}
+      <div className="hidden print:flex flex-col items-center mb-4 border-b border-zinc-200 pb-2">
+        <h1 className="text-xl font-black uppercase tracking-widest text-zinc-900 leading-none">{schedule.name}</h1>
+        <p className="text-[10px] font-bold text-zinc-400 uppercase mt-1">Gerado em {new Date().toLocaleDateString('pt-BR')}</p>
       </div>
 
       {/* Stats - Hidden in Print */}
@@ -82,45 +103,63 @@ export const ScheduleDetails: React.FC<Props> = ({ schedule, onBack }) => {
       </div>
 
       {/* Main Grid for Schedule - Printable */}
-      <div className="space-y-12 print:space-y-8">
+      <div className="space-y-12 print:space-y-4">
         {schedule.weeks.map((week: ScaleWeek, wIdx: number) => (
-          <div key={wIdx} className="space-y-6 print:break-inside-avoid">
-            <h3 className="text-xl font-black flex items-center gap-3 px-4 border-l-4 border-primary bg-primary/5 py-2 rounded-r-xl w-fit">
+          <div key={wIdx} className="space-y-4 print:space-y-1 print:break-inside-avoid">
+            <h3 className="text-xl font-black flex items-center gap-3 px-4 border-l-4 border-primary bg-primary/5 py-2 rounded-r-xl w-fit print:border-l-2 print:border-zinc-800 print:bg-transparent print:text-zinc-900 print:text-sm print:py-0 print:px-2 print:mb-1">
               Semana {week.weekIndex}
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 print:grid-cols-5 print:gap-1.5">
               {week.days.map((day: ScaleDay, dIdx: number) => (
-                <div key={dIdx} className="bg-card border border-border rounded-[2rem] overflow-hidden shadow-sm print:shadow-none print:border-zinc-300">
-                  <div className="bg-muted/50 p-4 border-b border-border font-black text-center print:bg-zinc-100 print:border-zinc-300">
+                <div key={dIdx} className="bg-card border border-border rounded-[2rem] overflow-hidden shadow-sm print:shadow-none print:border-zinc-200 print:rounded-md">
+                  <div className="bg-muted/50 p-4 border-b border-border font-black text-center print:bg-zinc-50 print:border-zinc-200 print:py-0.5 print:text-[9px] print:uppercase">
                     {day.dayLabel}
                   </div>
-                  <div className="p-4 space-y-3">
-                    {day.assignments.map((assignment: ScaleAssignment, aIdx: number) => (
-                      <div key={aIdx} className="flex flex-col gap-1 p-3 bg-muted/20 border border-transparent rounded-xl hover:border-primary/20 transition-all print:bg-white print:border-zinc-200">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground print:text-zinc-500">
-                          {getRoleName(assignment.roleId)}
-                        </span>
-                        <select 
-                          className="bg-transparent font-bold text-sm outline-none cursor-pointer appearance-none disabled:cursor-default"
-                          value={assignment.personId}
-                          onChange={(e) => updateAssignment.mutate({
-                            schedule,
-                            weekIdx: wIdx,
-                            dayIdx: dIdx,
-                            roleId: assignment.roleId,
-                            personId: e.target.value
-                          })}
-                        >
-                          {people?.map((p: ScalePerson) => (
-                            <option key={p.id} value={p.id}>{p.name}</option>
-                          ))}
-                        </select>
-                      </div>
-                    ))}
+                  <div className="p-4 space-y-3 print:p-1.5 print:space-y-1">
+                    {day.assignments.map((assignment: ScaleAssignment, aIdx: number) => {
+                      const isDayCollision = hasDayCollision(wIdx, dIdx, assignment.personId);
+                      const isWeekRoleCollision = hasWeekRoleCollision(wIdx, assignment.roleId, assignment.personId);
+                      const hasAnyCollision = isDayCollision || isWeekRoleCollision;
+
+                      return (
+                        <div key={aIdx} className={`relative flex flex-col gap-1 p-3 bg-muted/20 border transition-all print:bg-white print:border-transparent print:p-0 rounded-xl print:rounded-none ${
+                          hasAnyCollision ? 'border-orange-500/50 bg-orange-500/5 print:bg-transparent' : 'border-transparent hover:border-primary/20'
+                        }`}>
+                          <div className="flex justify-between items-center">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground print:text-zinc-400 print:text-[7px]">
+                              {getRoleName(assignment.roleId)}
+                            </span>
+                            {hasAnyCollision && (
+                              <div className="flex gap-1 print:hidden" title={isDayCollision ? "Repetição no mesmo dia" : "Repetição na mesma função na semana"}>
+                                <AlertTriangle className="w-3.5 h-3.5 text-orange-500" />
+                              </div>
+                            )}
+                          </div>
+                          
+                          <select 
+                            className="bg-transparent text-foreground font-bold text-sm outline-none cursor-pointer disabled:cursor-default w-full print:text-[11px] print:font-black print:appearance-none print:p-0"
+                            value={assignment.personId}
+                            onChange={(e) => updateAssignment.mutate({
+                              schedule,
+                              weekIdx: wIdx,
+                              dayIdx: dIdx,
+                              roleId: assignment.roleId,
+                              personId: e.target.value
+                            })}
+                          >
+                            {people?.map((p: ScalePerson) => (
+                              <option key={p.id} value={p.id} className="text-foreground bg-card">
+                                {p.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      );
+                    })}
                     {day.assignments.length === 0 && (
-                      <div className="text-center py-4 text-xs italic text-muted-foreground">
-                        Nenhuma atribuição
+                      <div className="text-center py-4 text-xs italic text-muted-foreground print:py-1 print:text-[9px]">
+                        -
                       </div>
                     )}
                   </div>
@@ -132,8 +171,8 @@ export const ScheduleDetails: React.FC<Props> = ({ schedule, onBack }) => {
       </div>
       
       {/* Footer Print Info */}
-      <div className="hidden print:block text-center text-xs text-zinc-400 pt-12">
-          Gerado automaticamente por Vocare CRM - Gerador de Escalas em {new Date().toLocaleDateString('pt-BR')}
+      <div className="hidden print:block text-center text-[10px] text-zinc-400 pt-8 border-t border-zinc-100 mt-8 font-medium">
+          Vocare CRM - Gerador de Escalas Inteligente
       </div>
     </div>
   );
