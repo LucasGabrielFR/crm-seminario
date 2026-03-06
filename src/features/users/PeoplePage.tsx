@@ -145,6 +145,11 @@ export const PeoplePage: React.FC = () => {
                               Bibliotecário
                             </span>
                           )}
+                          {profile.is_teacher && profile.role !== 'professor' && (
+                            <span className="bg-orange-500/10 text-orange-600 text-[8px] px-1.5 py-0.5 rounded font-black uppercase flex items-center gap-1">
+                              Professor
+                            </span>
+                          )}
                         </span>
                       </div>
                     </td>

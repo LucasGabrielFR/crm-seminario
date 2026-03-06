@@ -21,6 +21,7 @@ export const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, user, onCl
     cpf: '',
     role: 'seminarista',
     is_librarian: false,
+    is_teacher: false,
     stage_id: '',
   });
 
@@ -32,6 +33,7 @@ export const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, user, onCl
         cpf: user.cpf || '',
         role: user.role || 'seminarista',
         is_librarian: user.is_librarian || false,
+        is_teacher: user.is_teacher || false,
         stage_id: user.stage_id || '',
       });
     }
@@ -66,6 +68,7 @@ export const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, user, onCl
             action: 'update',
             userId: user.id,
             ...formData, 
+            stage_id: formData.role === 'seminarista' ? formData.stage_id : null,
             cpf: cleanCpf
           }),
         }
@@ -142,17 +145,32 @@ export const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, user, onCl
                 <option value="admin">Administrador</option>
               </select>
             </div>
-            <div className="flex items-center space-x-2 pt-6">
-              <input
-                type="checkbox"
-                id="is_librarian"
-                className="w-5 h-5 rounded border-border text-primary focus:ring-primary/20"
-                checked={formData.is_librarian}
-                onChange={e => setFormData({ ...formData, is_librarian: e.target.checked })}
-              />
-              <label htmlFor="is_librarian" className="text-sm font-bold text-muted-foreground cursor-pointer">
-                Atribuir função de Bibliotecário
-              </label>
+            <div className="flex flex-col space-y-3 pt-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="is_librarian"
+                  className="w-5 h-5 rounded border-border text-primary focus:ring-primary/20"
+                  checked={formData.is_librarian}
+                  onChange={e => setFormData({ ...formData, is_librarian: e.target.checked })}
+                />
+                <label htmlFor="is_librarian" className="text-sm font-bold text-muted-foreground cursor-pointer">
+                  Atribuir função de Bibliotecário
+                </label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="is_teacher"
+                  className="w-5 h-5 rounded border-border text-primary focus:ring-primary/20"
+                  checked={formData.is_teacher}
+                  onChange={e => setFormData({ ...formData, is_teacher: e.target.checked })}
+                />
+                <label htmlFor="is_teacher" className="text-sm font-bold text-muted-foreground cursor-pointer">
+                  Atribuir acesso de Professor
+                </label>
+              </div>
             </div>
           </div>
 

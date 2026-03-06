@@ -29,18 +29,37 @@ export const AcademicPage: React.FC = () => {
   });
 
   const isAdminOrFormador = profile?.role === 'admin' || profile?.role === 'formador';
-  const isProfessor = profile?.role === 'professor';
+  const isProfessor = profile?.role === 'professor' || profile?.is_teacher;
+  const isStudent = profile?.role === 'seminarista';
 
-  // Define a aba inicial com base no papel
-  const initialTab = isAdminOrFormador ? 'courses' : (isProfessor ? 'teacher' : 'student');
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const availableTabs: { id: string; label: string; icon: any }[] = [];
+  
+  if (isAdminOrFormador) {
+    availableTabs.push({ id: 'courses', label: 'Cursos & Disciplinas', icon: BookOpen });
+    availableTabs.push({ id: 'classes', label: 'Turmas & Horários', icon: CalendarDays });
+  }
+  if (isProfessor) {
+    availableTabs.push({ id: 'teacher', label: 'Portal do Professor', icon: BookOpen });
+  }
+  if (isStudent) {
+    availableTabs.push({ id: 'student', label: 'Boletim Acadêmico', icon: BookOpen });
+  }
+  if (isAdminOrFormador) {
+    availableTabs.push({ id: 'settings', label: 'Configurações', icon: Settings });
+  }
+  
+  // Se não tem nenhum perfil definido claramente, cai pro aluno por padrão
+  if (availableTabs.length === 0) {
+      availableTabs.push({ id: 'student', label: 'Boletim Acadêmico', icon: BookOpen });
+  }
 
-  // Tabs de Admin
-  const adminTabs = [
-    { id: 'courses', label: 'Cursos & Disciplinas', icon: BookOpen },
-    { id: 'classes', label: 'Turmas & Horários', icon: CalendarDays },
-    { id: 'settings', label: 'Configurações', icon: Settings },
-  ];
+  const [activeTab, setActiveTab] = useState<string>('');
+
+  React.useEffect(() => {
+    if (profile && !activeTab && availableTabs.length > 0) {
+      setActiveTab(availableTabs[0].id);
+    }
+  }, [profile, activeTab]);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -68,9 +87,9 @@ export const AcademicPage: React.FC = () => {
         <p className="text-muted-foreground font-medium mt-1">Gestão de cursos, turmas, notas e boletins.</p>
       </div>
 
-      {isAdminOrFormador && (
+      {availableTabs.length > 1 && (
         <div className="flex space-x-2 border-b border-border pb-px overflow-x-auto overflow-y-hidden">
-          {adminTabs.map((tab) => (
+          {availableTabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}

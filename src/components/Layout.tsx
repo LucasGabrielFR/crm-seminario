@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { 
   Users, 
   LayoutDashboard, 
@@ -25,6 +26,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = React.useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { profile } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -113,6 +115,37 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               <LogOut className="w-5 h-5 mr-3" />
               Sair
             </button>
+
+            {profile && (
+              <div className="pt-4 mt-2 border-t border-border flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold truncate max-w-[130px]" title={profile.full_name}>
+                    {profile.full_name}
+                  </span>
+                  <div className="flex gap-1 mt-1 flex-wrap">
+                    {profile.role && (
+                      <span className="text-[9px] uppercase font-black bg-primary/10 text-primary px-1.5 py-0.5 rounded tracking-wider">
+                        {profile.role === 'admin' ? 'Administrador' : profile.role}
+                      </span>
+                    )}
+                    {profile.is_teacher && profile.role !== 'professor' && (
+                      <span className="text-[9px] uppercase font-black bg-orange-500/10 text-orange-600 px-1.5 py-0.5 rounded tracking-wider">
+                        Professor
+                      </span>
+                    )}
+                    {profile.is_librarian && (
+                      <span className="text-[9px] uppercase font-black bg-primary/10 text-primary px-1.5 py-0.5 rounded tracking-wider mt-1">
+                        Bibliotecário
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center font-bold text-muted-foreground shadow-inner flex-shrink-0">
+                  {profile.full_name?.charAt(0).toUpperCase()}
+                </div>
+              </div>
+            )}
+
             <div className="px-4 pt-4 text-center">
               <span className="text-[10px] font-bold text-muted-foreground/30 uppercase tracking-[0.2em]">
                 v{packageJson.version}

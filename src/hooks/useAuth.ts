@@ -7,6 +7,7 @@ export interface UserProfile {
     full_name: string;
     role: string;
     is_librarian: boolean;
+    is_teacher: boolean;
     avatar_url: string | null;
 }
 
@@ -19,7 +20,7 @@ export const useAuth = () => {
     const getProfile = async (userId: string) => {
         const { data } = await supabase
             .from('profiles')
-            .select('id, full_name, role, is_librarian, avatar_url')
+            .select('id, full_name, role, is_librarian, is_teacher, avatar_url')
             .eq('id', userId)
             .single();
         setProfile(data);
