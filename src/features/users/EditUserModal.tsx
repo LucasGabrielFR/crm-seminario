@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import { useFormativeStages, Profile } from './useUsers';
 import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../hooks/useAuth';
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -11,6 +12,8 @@ interface EditUserModalProps {
 }
 
 export const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, user, onClose, onSuccess }) => {
+  const { profile: currentUser } = useAuth();
+  const isAdmin = currentUser?.role === 'admin';
   const { data: stages } = useFormativeStages();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -142,7 +145,7 @@ export const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, user, onCl
                 <option value="seminarista">Seminarista</option>
                 <option value="formador">Formador</option>
                 <option value="professor">Professor</option>
-                <option value="admin">Administrador</option>
+                {isAdmin && <option value="admin">Administrador</option>}
               </select>
             </div>
             <div className="flex flex-col space-y-3 pt-4">

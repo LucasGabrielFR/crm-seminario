@@ -85,17 +85,15 @@ export const LibraryPage: React.FC = () => {
           <MessageSquare className="w-4 h-4 mr-2" />
           Solicitações
         </button>
-        {isLibrarian && (
-          <button
-            onClick={() => setActiveTab('virtual')}
-            className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-              activeTab === 'virtual' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Cloud className="w-4 h-4 mr-2" />
-            Virtual
-          </button>
-        )}
+        <button
+          onClick={() => setActiveTab('virtual')}
+          className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+            activeTab === 'virtual' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Cloud className="w-4 h-4 mr-2" />
+          Virtual
+        </button>
       </div>
 
       <div className="min-h-[400px]">
@@ -108,7 +106,7 @@ export const LibraryPage: React.FC = () => {
         )}
         {activeTab === 'loans' && <LoansList onlySelf={!isLibrarian} />}
         {activeTab === 'requests' && <RequestList onlySelf={!isLibrarian} />}
-        {activeTab === 'virtual' && isLibrarian && <VirtualLibrary />}
+        {activeTab === 'virtual' && <VirtualLibrary />}
       </div>
 
       <AddBookModal isOpen={isAddBookModalOpen} onClose={() => setIsAddBookModalOpen(false)} />

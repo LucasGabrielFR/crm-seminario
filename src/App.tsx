@@ -34,7 +34,8 @@ const Dashboard = () => (
 );
 
 function App() {
-  const { session, loading } = useAuth();
+  const { session, profile, loading } = useAuth();
+  const isAdminOrFormador = profile?.role === 'admin' || profile?.role === 'formador';
 
   if (loading) {
     return (
@@ -69,9 +70,13 @@ function App() {
           path="/users" 
           element={
             session ? (
-              <Layout>
-                <PeoplePage />
-              </Layout>
+              isAdminOrFormador ? (
+                <Layout>
+                  <PeoplePage />
+                </Layout>
+              ) : (
+                <Navigate to="/" />
+              )
             ) : (
               <Navigate to="/login" />
             )

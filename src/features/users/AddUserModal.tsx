@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import { useFormativeStages } from './useUsers';
 import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../hooks/useAuth';
 
 interface AddUserModalProps {
   isOpen: boolean;
@@ -10,6 +11,8 @@ interface AddUserModalProps {
 }
 
 export const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onSuccess }) => {
+  const { profile: currentUser } = useAuth();
+  const isAdmin = currentUser?.role === 'admin';
   const { data: stages } = useFormativeStages();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -142,7 +145,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onS
                 <option value="seminarista">Seminarista</option>
                 <option value="formador">Formador</option>
                 <option value="professor">Professor</option>
-                <option value="admin">Administrador</option>
+                {isAdmin && <option value="admin">Administrador</option>}
               </select>
             </div>
             <div className="flex flex-col space-y-3 pt-4">

@@ -5,8 +5,11 @@ import { AddUserModal } from './AddUserModal';
 import { EditUserModal } from './EditUserModal';
 import { supabase } from '../../lib/supabase';
 import { Profile } from './useUsers';
+import { useAuth } from '../../hooks/useAuth';
 
 export const PeoplePage: React.FC = () => {
+  const { profile: currentUser } = useAuth();
+  const isAdmin = currentUser?.role === 'admin';
   const { data: profiles, isLoading, refetch } = useUsers();
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -173,21 +176,25 @@ export const PeoplePage: React.FC = () => {
                     </td>
                     <td className="px-8 py-5 text-right">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button 
-                          onClick={() => setEditingUser(profile)}
-                          className="p-2 text-primary hover:bg-primary/10 rounded-xl transition-all"
-                          title="Editar"
-                        >
-                          <Pencil className="w-5 h-5" />
-                        </button>
-                        <button 
-                          disabled={deletingId === profile.id}
-                          onClick={() => handleDelete(profile.id, profile.full_name)}
-                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
-                          title="Excluir"
-                        >
-                          {deletingId === profile.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Trash2 className="w-5 h-5" />}
-                        </button>
+                        {(isAdmin || profile.role !== 'admin') && (
+                          <>
+                            <button 
+                              onClick={() => setEditingUser(profile)}
+                              className="p-2 text-primary hover:bg-primary/10 rounded-xl transition-all"
+                              title="Editar"
+                            >
+                              <Pencil className="w-5 h-5" />
+                            </button>
+                            <button 
+                              disabled={deletingId === profile.id || profile.id === currentUser?.id}
+                              onClick={() => handleDelete(profile.id, profile.full_name)}
+                              className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-all disabled:opacity-50"
+                              title={profile.id === currentUser?.id ? "Você não pode se excluir" : "Excluir"}
+                            >
+                              {deletingId === profile.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Trash2 className="w-5 h-5" />}
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

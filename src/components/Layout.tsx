@@ -36,11 +36,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
-    { name: 'Pessoas', path: '/users', icon: Users },
-    { name: 'Biblioteca', path: '/library', icon: BookOpen },
-    { name: 'Acadêmico', path: '/academic', icon: GraduationCap },
-  ];
+    { name: 'Dashboard', path: '/', icon: LayoutDashboard, visible: true },
+    { 
+      name: 'Pessoas', 
+      path: '/users', 
+      icon: Users,
+      visible: profile?.role === 'admin' || profile?.role === 'formador'
+    },
+    { name: 'Biblioteca', path: '/library', icon: BookOpen, visible: true },
+    { name: 'Acadêmico', path: '/academic', icon: GraduationCap, visible: true },
+  ].filter(item => item.visible);
 
   const isActive = (path: string) => location.pathname === path;
 
