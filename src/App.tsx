@@ -7,32 +7,7 @@ import { LibraryPage } from './features/library/LibraryPage';
 import { AcademicPage } from './features/academic/AcademicPage';
 import { ScalesPage } from './features/scales/ScalesPage';
 
-// Placeholder for Dashboard
-const Dashboard = () => (
-  <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <div>
-      <h1 className="text-3xl font-extrabold tracking-tight">Dashboard</h1>
-      <p className="text-muted-foreground font-medium mt-1">Bem-vindo ao Vocare CRM</p>
-    </div>
-    
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="bg-card p-8 rounded-2xl shadow-xl shadow-primary/5 border border-border group hover:border-primary/50 transition-all duration-300">
-        <h3 className="text-muted-foreground text-xs font-bold uppercase tracking-widest">Seminaristas Ativos</h3>
-        <p className="text-4xl font-black mt-3 text-foreground group-hover:text-primary transition-colors">0</p>
-        <div className="mt-4 w-full h-1 bg-muted rounded-full overflow-hidden">
-          <div className="h-full bg-primary w-0 transition-all duration-1000"></div>
-        </div>
-      </div>
-      <div className="bg-card p-8 rounded-2xl shadow-xl shadow-primary/5 border border-border group hover:border-primary/50 transition-all duration-300">
-        <h3 className="text-muted-foreground text-xs font-bold uppercase tracking-widest">Livros Emprestados</h3>
-        <p className="text-4xl font-black mt-3 text-foreground group-hover:text-primary transition-colors">0</p>
-        <div className="mt-4 w-full h-1 bg-muted rounded-full overflow-hidden">
-          <div className="h-full bg-primary w-0 transition-all duration-1000"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
+import { Dashboard } from './features/dashboard/Dashboard';
 
 function App() {
   const { session, profile, loading } = useAuth();
