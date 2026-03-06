@@ -1,11 +1,13 @@
-import React from 'react';
-import { useClasses } from '../useAcademic';
+import { useClasses, useAcademicSettings } from '../useAcademic';
 import { useAuth } from '../../../hooks/useAuth';
 import { GraduationCap, Clock, CalendarDays, MapPin, User, Loader2 } from 'lucide-react';
 
 export const StudentPortalTab: React.FC = () => {
   const { profile } = useAuth();
-  const { data: classes, isLoading } = useClasses();
+  const { data: classes, isLoading: isLoadingClasses } = useClasses();
+  const { data: settings, isLoading: isLoadingSettings } = useAcademicSettings();
+
+  const isLoading = isLoadingClasses || isLoadingSettings;
 
   if (isLoading) {
     return (
@@ -44,9 +46,11 @@ export const StudentPortalTab: React.FC = () => {
               let numMedia = 0;
               let isApproved = false;
               if (myEnrollment?.n1_grade != null && myEnrollment?.n2_grade != null) {
-                numMedia = (myEnrollment.n1_grade + myEnrollment.n2_grade) / 2;
+                const w1 = settings?.n1_weight ?? 5;
+                const w2 = settings?.n2_weight ?? 5;
+                numMedia = ((myEnrollment.n1_grade * w1) + (myEnrollment.n2_grade * w2)) / 10;
                 mediaStr = numMedia.toFixed(1);
-                isApproved = numMedia >= 7; // Custom logic
+                isApproved = numMedia >= (settings?.passing_grade ?? 7);
               }
 
               return (

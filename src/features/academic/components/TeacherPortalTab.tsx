@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useClasses, useUpsertEnrollment, Enrollment } from '../useAcademic';
+import { useClasses, useUpsertEnrollment, Enrollment, useAcademicSettings, AcademicSetting } from '../useAcademic';
 import { useAuth } from '../../../hooks/useAuth';
 import { BookOpen, Users, ChevronDown, ChevronUp, Save, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 type EnrollmentWithProfile = Enrollment & { profiles?: { full_name: string | null } | null };
 
-const StudentRow: React.FC<{ enrollment: EnrollmentWithProfile; classId: string }> = ({ enrollment, classId }) => {
+const StudentRow: React.FC<{ enrollment: EnrollmentWithProfile; classId: string; settings: AcademicSetting | undefined }> = ({ enrollment, classId, settings }) => {
   const [n1, setN1] = useState<string>(enrollment.n1_grade?.toString() || '');
   const [n2, setN2] = useState<string>(enrollment.n2_grade?.toString() || '');
   const [absences, setAbsences] = useState<string>(enrollment.absences?.toString() || '0');
@@ -46,11 +46,14 @@ const StudentRow: React.FC<{ enrollment: EnrollmentWithProfile; classId: string 
 
   const calculateMedia = () => {
     if (!n1 || !n2) return null;
-    const mean = (parseFloat(n1) + parseFloat(n2)) / 2;
+    const w1 = settings?.n1_weight ?? 5;
+    const w2 = settings?.n2_weight ?? 5;
+    const mean = ((parseFloat(n1) * w1) + (parseFloat(n2) * w2)) / 10;
     return mean.toFixed(1);
   };
 
   const media = calculateMedia();
+  const passingGrade = settings?.passing_grade ?? 7;
 
   return (
     <tr className="border-b border-border hover:bg-muted/20 transition-colors">
@@ -77,7 +80,7 @@ const StudentRow: React.FC<{ enrollment: EnrollmentWithProfile; classId: string 
       </td>
       <td className="px-4 py-3 font-bold">
         {media ? (
-          <span className={parseFloat(media) >= 7 ? 'text-green-600' : 'text-red-500'}>
+          <span className={parseFloat(media) >= passingGrade ? 'text-green-600' : 'text-red-500'}>
             {media}
           </span>
         ) : '-'}
@@ -119,12 +122,15 @@ const StudentRow: React.FC<{ enrollment: EnrollmentWithProfile; classId: string 
 
 export const TeacherPortalTab: React.FC = () => {
   const { profile } = useAuth();
-  const { data: classes, isLoading } = useClasses();
+  const { data: classes, isLoading: isLoadingClasses } = useClasses();
+  const { data: settings, isLoading: isLoadingSettings } = useAcademicSettings();
   const [expandedClasses, setExpandedClasses] = useState<string[]>([]);
 
+  const isLoading = isLoadingClasses || isLoadingSettings;
+
   const toggleClass = (id: string) => {
-    setExpandedClasses(prev => 
-      prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
+    setExpandedClasses((prev: string[]) => 
+      prev.includes(id) ? prev.filter((c: string) => c !== id) : [...prev, id]
     );
   };
 
@@ -201,7 +207,7 @@ export const TeacherPortalTab: React.FC = () => {
                         </thead>
                         <tbody>
                           {cls.enrollments.map((enr) => (
-                            <StudentRow key={enr.id} enrollment={enr} classId={cls.id} />
+                            <StudentRow key={enr.id} enrollment={enr} classId={cls.id} settings={settings} />
                           ))}
                         </tbody>
                       </table>

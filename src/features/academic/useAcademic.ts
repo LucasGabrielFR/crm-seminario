@@ -12,6 +12,7 @@ export type CourseWithSubjects = Course & {
 export type ClassType = Database['public']['Tables']['classes']['Row'];
 export type Schedule = Database['public']['Tables']['class_schedules']['Row'];
 export type Enrollment = Database['public']['Tables']['enrollments']['Row'];
+export type AcademicSetting = Database['public']['Tables']['academic_settings']['Row'];
 
 export type ClassWithDetails = ClassType & {
     subjects: { name: string; course_id: string } | null;
@@ -114,16 +115,51 @@ export const useDeleteSubject = () => {
     });
 };
 
-export const useClasses = () => { return useQuery({ queryKey: ['classes'], queryFn: async () => { const { data, error } = await supabase.from('classes').select('*, subjects(name, course_id), profiles(full_name), class_schedules(*), enrollments(*, profiles(full_name))').order('created_at', { ascending: false }); if (error) throw error; return data as ClassWithDetails[]; }}); };
+export const useClasses = () => { return useQuery({ queryKey: ['classes'], queryFn: async () => { const { data, error } = await supabase.from('classes').select('*, subjects(name, course_id), profiles(full_name), class_schedules(*), enrollments(*, profiles(full_name))').order('created_at', { ascending: false }); if (error) throw error; return data as ClassWithDetails[]; } }); };
 
-export const useUpsertClass = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (classData: Partial<ClassType>) => { const { data, error } = await supabase.from('classes').upsert(classData).select().single(); if (error) throw error; return data; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); }}); };
+export const useUpsertClass = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (classData: Partial<ClassType>) => { const { data, error } = await supabase.from('classes').upsert(classData).select().single(); if (error) throw error; return data; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); } }); };
 
-export const useDeleteClass = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.from('classes').delete().eq('id', id); if (error) throw error; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); }}); };
+export const useDeleteClass = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.from('classes').delete().eq('id', id); if (error) throw error; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); } }); };
 
-export const useUpsertSchedule = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (schedule: Partial<Schedule>) => { const { data, error } = await supabase.from('class_schedules').upsert(schedule).select().single(); if (error) throw error; return data; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); }}); };
+export const useUpsertSchedule = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (schedule: Partial<Schedule>) => { const { data, error } = await supabase.from('class_schedules').upsert(schedule).select().single(); if (error) throw error; return data; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); } }); };
 
-export const useDeleteSchedule = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.from('class_schedules').delete().eq('id', id); if (error) throw error; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); }}); };
+export const useDeleteSchedule = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.from('class_schedules').delete().eq('id', id); if (error) throw error; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); } }); };
 
-export const useUpsertEnrollment = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (enrollment: Partial<Enrollment>) => { const { data, error } = await supabase.from('enrollments').upsert(enrollment).select().single(); if (error) throw error; return data; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); }}); };
+export const useUpsertEnrollment = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (enrollment: Partial<Enrollment>) => { const { data, error } = await supabase.from('enrollments').upsert(enrollment).select().single(); if (error) throw error; return data; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); } }); };
 
-export const useDeleteEnrollment = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.from('enrollments').delete().eq('id', id); if (error) throw error; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); }}); };
+export const useDeleteEnrollment = () => { const queryClient = useQueryClient(); return useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.from('enrollments').delete().eq('id', id); if (error) throw error; }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['classes'] }); } }); };
+
+export const useAcademicSettings = () => {
+    return useQuery({
+        queryKey: ['academic_settings'],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('academic_settings')
+                .select('*')
+                .limit(1)
+                .single();
+            if (error) throw error;
+            return data as AcademicSetting;
+        },
+    });
+};
+
+export const useUpdateAcademicSettings = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (settings: Partial<AcademicSetting>) => {
+            if (!settings.id) throw new Error('ID missing');
+            const { data, error } = await supabase
+                .from('academic_settings')
+                .update(settings)
+                .eq('id', settings.id)
+                .select()
+                .single();
+            if (error) throw error;
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['academic_settings'] });
+        },
+    });
+};

@@ -4,6 +4,8 @@ import { CoursesTab } from './components/CoursesTab';
 import { ClassesTab } from './components/ClassesTab';
 import { TeacherPortalTab } from './components/TeacherPortalTab';
 import { StudentPortalTab } from './components/StudentPortalTab';
+import { SettingsTab } from './components/SettingsTab';
+import { TimetableTab } from './components/TimetableTab';
 import { useAuth } from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
@@ -44,6 +46,10 @@ export const AcademicPage: React.FC = () => {
   if (isStudent) {
     availableTabs.push({ id: 'student', label: 'Boletim Acadêmico', icon: BookOpen });
   }
+  
+  // Grade de Horários is visible to everyone
+  availableTabs.push({ id: 'timetable', label: 'Grade de Horários', icon: CalendarDays });
+
   if (isAdminOrFormador) {
     availableTabs.push({ id: 'settings', label: 'Configurações', icon: Settings });
   }
@@ -71,8 +77,10 @@ export const AcademicPage: React.FC = () => {
         return <TeacherPortalTab />;
       case 'student':
         return <StudentPortalTab />;
+      case 'timetable':
+        return <TimetableTab />;
       case 'settings':
-        return <div className="p-8 text-center text-muted-foreground">Configurações (Em breve)</div>;
+        return <SettingsTab />;
       default:
         return null;
     }
@@ -81,14 +89,14 @@ export const AcademicPage: React.FC = () => {
   if (!profile) return null;
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 print:space-y-0">
+      <div className="print:hidden">
         <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Módulo Acadêmico</h1>
         <p className="text-muted-foreground font-medium mt-1">Gestão de cursos, turmas, notas e boletins.</p>
       </div>
 
       {availableTabs.length > 1 && (
-        <div className="flex space-x-2 border-b border-border pb-px overflow-x-auto overflow-y-hidden">
+        <div className="flex space-x-2 border-b border-border pb-px overflow-x-auto overflow-y-hidden print:hidden">
           {availableTabs.map((tab) => (
             <button
               key={tab.id}
@@ -107,7 +115,7 @@ export const AcademicPage: React.FC = () => {
       )}
 
       {/* Se não for admin, não mostra a barra de abas e renderiza direto a visão específica */}
-      <div className="bg-card rounded-3xl shadow-2xl shadow-primary/5 border border-border overflow-hidden min-h-[500px]">
+      <div className="bg-card rounded-3xl shadow-2xl shadow-primary/5 border border-border overflow-hidden min-h-[500px] print:shadow-none print:border-none print:bg-transparent print:min-h-0 print:p-0 print:rounded-none">
         {renderContent()}
       </div>
     </div>

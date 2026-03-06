@@ -47,7 +47,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row font-sans">
       {/* Mobile Header */}
-      <div className="md:hidden bg-card border-b border-border p-4 flex justify-between items-center sticky top-0 z-50">
+      <div className="md:hidden bg-card border-b border-border p-4 flex justify-between items-center sticky top-0 z-50 print:hidden">
         <h1 className="text-xl font-bold text-primary tracking-tight">Vocare CRM</h1>
         <div className="flex items-center gap-2">
           <button 
@@ -65,7 +65,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Sidebar */}
       <aside className={`
         fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out
-        md:translate-x-0 md:static md:block
+        md:translate-x-0 md:static md:block print:hidden
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="h-full flex flex-col p-6">
@@ -161,14 +161,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto bg-background/50 dark:bg-background pb-20 md:pb-0">
-        <div className="p-4 md:p-10 max-w-7xl mx-auto">
+      <main className="flex-1 overflow-auto bg-background/50 dark:bg-background pb-20 md:pb-0 print:overflow-visible print:bg-transparent print:p-0 print:m-0">
+        <div className="p-4 md:p-10 max-w-7xl mx-auto print:p-0 print:max-w-none">
           {children}
         </div>
       </main>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-lg border-t border-border flex justify-around p-3 z-40">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-lg border-t border-border flex justify-around p-3 z-40 print:hidden">
         {navItems.map((item) => (
           <Link
             key={item.name}
