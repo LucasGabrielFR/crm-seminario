@@ -5,6 +5,17 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-03-06
+
+### Segurança e Controle de Acesso (RBAC)
+- **Navegação Restrita**: O menu "Pessoas" agora é oculto e a rota `/users` bloqueia o acesso automático para Seminaristas e Professores, redirecionando-os para a página inicial, permitindo o acesso apenas a Administradores e Formadores.
+- **Gestão de Pessoas Protegida**: 
+  - Apenas Administradores podem conceder a função de "Admin" a outros usuários através do modal de criação/edição.
+  - Administradores na lista de pessoas são protegidos contra edição e exclusão por Formadores.
+  - Usuários não podem mais excluir a própria conta (botão de lixeira é desabilitado na sua própria linha).
+- **Acesso Acadêmico Otimizado**: O Auth Provider foi refatorado para entregar o perfil do usuário sem requisições em cascata na página Acadêmica, melhorando o tempo de tela.
+- **Biblioteca Virtual**: A aba Virtual contendo o link do Drive para leitura que antes era restrita à Bibliotecários, agora foi liberada universalmente na página da Biblioteca para Seminaristas acessarem o banco de dados.
+
 ## [1.3.0] - 2026-03-06
 
 ### Adicionado
