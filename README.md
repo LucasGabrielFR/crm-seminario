@@ -18,22 +18,57 @@ Para rodar o projeto localmente, você precisa configurar as variáveis de ambie
 - **Gerenciamento de Estado**: [TanStack Query (React Query)](https://tanstack.com/query/latest)
 - **Ícones**: [Lucide React](https://lucide.dev/)
 
+## 🧩 Módulos do Sistema
+
+O sistema foi desenhado em grandes blocos funcionais para atender todas as necessidades da instituição:
+
+### 1. Gestão de Pessoas
+Módulo destinado à criação e edição de perfis de membros (Administradores, Formadores, Professores e Seminaristas).
+* **Funcionalidades:** Listagem de usuários, filtros com busca inteligente, exclusão segura e atribuição de funções secundárias (ex: Bibliotecário).
+* **Segurança:** Apenas usuários com alta permissão conseguem gerenciar e promover novos membros.
+
+### 2. Biblioteca Essencial
+Ecossistema completo para gestão do acervo físico e acesso digital.
+* **Funcionalidades:** 
+  * Cadastro de livros com categorização múltipla.
+  * Solicitação de empréstimos por alunos e aprovação por bibliotecários.
+  * Biblioteca Virtual: Acesso a links seguros (Google Drive) com PDFs e e-books liberados para toda a instituição.
+* **Acesso:** Qualquer usuário pode consultar o acervo físico e virtual, mas apenas os bibliotecários gerem fluxo de devolução e catalogação.
+
+### 3. Módulo Acadêmico
+O coração pedagógico da plataforma.
+* **Para Administradores e Formadores:** Criação de Cursos, Matrizes Curriculares, Turmas e montagem da Grade de Horários Global (com detecção automática de choque de horário). Configuração da fórmula oficial de notas (Pesos e Média).
+* **Para Professores:** Diário de Classe digital. Portal isolado para lançamento prático de Notas (N1, N2) e Frequências.
+* **Para Alunos (Seminaristas):** Boletim em tempo real listando as disciplinas matriculadas, faltas, situação (Aprovado/Reprovado) e agenda semanal de aulas.
+* **Impressão (PDF):** Relatórios desenhados com CSS `@media print` para exportar grades de horário em paisagem e modo claro com 100% de aproveitamento do papel.
+
+## 🎭 Perfis e Permissões (RBAC)
+
+O sistema conta com um controle de acesso focado na hierarquia institucional:
+
+1. **Administrador (Admin):** Visão e controle absoluto. Pode editar dados e permissões de qualquer outro usuário, gerir cursos e configurar regras do sistema. É o único capaz de promover outros a "Admin".
+2. **Formador:** Visão gerencial avançada. Cria turmas, visualiza todas as notas e tem poder sobre as atividades diárias do seminário. Não possui poder destrutivo administrativo (ex: não pode excluir admins).
+3. **Professor:** Visão focada. Possui acesso dedicado exclusivamente para interagir com suas próprias turmas, lançando resultados e pautas.
+4. **Seminarista (Aluno):** Visão de consumidor final. Pode visualizar o seu boletim, sua grade de aulas específica, e fazer uso do catálogo e solicitações da biblioteca.
+
+* **Modificador Especial - Bibliotecário:** Qualquer perfil listado acima pode receber esta "chave secundária", que desbloqueia os controles do acervo e empréstimos na Biblioteca.
+
 ## 📂 Estrutura do Projeto
 
 O projeto segue uma arquitetura baseada em funcionalidades (**Feature-Based Folder Structure**), o que facilita a escalabilidade e a manutenção.
 
 ```text
 src/
-├── components/       # Componentes globais e UI (Layout, Sidebar, etc)
-├── features/         # Lógica de negócio dividida por módulos
-│   ├── auth/         # Autenticação e proteção de rotas
-│   ├── users/        # Gestão de perfis e membros (seminaristas, professores)
-│   ├── library/      # (Em breve) Gestão de livros e empréstimos
-│   └── academic/     # (Em breve) Notas, disciplinas e turmas
-├── hooks/            # Hooks customizados globais (useAuth, etc)
-├── lib/              # Configurações de bibliotecas externas (Supabase Client)
-├── types/            # Definições de tipos TypeScript
-└── utils/            # Funções utilitárias
+├── components/       # Componentes globais e UI (Layout responsivo com Sidebar, Menus, Modais)
+├── features/         # Lógica de negócio isolada verticalmente por módulo
+│   ├── auth/         # Autenticação e telas de Login
+│   ├── users/        # Dashboard de pessoas e lógica de Modais (Adicionar/Editar)
+│   ├── library/      # Acervo, requisições de livros, empréstimos e biblioteca virtual
+│   └── academic/     # Portal do aluno, portal do professor, grade curricular, notas e horários
+├── hooks/            # Hooks customizados (Ex: useAuth fornecendo o RBAC em tempo real)
+├── lib/              # Inicialização do banco de dados (Supabase Client)
+├── types/            # Tipagens globais e Definições de esquema de Banco em TypeScript
+└── utils/            # Funções puras 
 ```
 
 ## 🛠️ Como rodar o projeto
