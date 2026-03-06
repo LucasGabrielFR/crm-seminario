@@ -42,6 +42,14 @@ O coração pedagógico da plataforma.
 * **Para Alunos (Seminaristas):** Boletim em tempo real listando as disciplinas matriculadas, faltas, situação (Aprovado/Reprovado) e agenda semanal de aulas.
 * **Impressão (PDF):** Relatórios desenhados com CSS `@media print` para exportar grades de horário em paisagem e modo claro com 100% de aproveitamento do papel.
 
+### 4. Gerador de Escalas Inteligente
+Um sistema autônomo para criação de escalas de serviço e atividades.
+* **Base Independente:** Possui seu próprio cadastro de pessoas e funções, não dependendo da base de usuários principal do sistema.
+* **Automação Inteligente:** Algoritmo que gera escalas automaticamente, priorizando a rotação máxima de membros e evitando que a mesma pessoa repita funções em curto prazo.
+* **Alertas de Conflito:** Detecção visual instantânea caso uma pessoa seja escalada para duas funções no mesmo dia ou na mesma função dentro de uma mesma semana.
+* **Impressão Otimizada:** Layout ultra-compacto desenhado especificamente para escalas, aproveitando cada centímetro do papel e garantindo legibilidade máxima.
+* **Acesso:** Disponível para todos os usuários autenticados, permitindo colaboração na gestão das escalas institucionais.
+
 ## 🎭 Perfis e Permissões (RBAC)
 
 O sistema conta com um controle de acesso focado na hierarquia institucional:
@@ -64,7 +72,8 @@ src/
 │   ├── auth/         # Autenticação e telas de Login
 │   ├── users/        # Dashboard de pessoas e lógica de Modais (Adicionar/Editar)
 │   ├── library/      # Acervo, requisições de livros, empréstimos e biblioteca virtual
-│   └── academic/     # Portal do aluno, portal do professor, grade curricular, notas e horários
+│   ├── academic/     # Portal do aluno, portal do professor, grade curricular, notas e horários
+│   └── scales/       # Gerador de escalas automático, gestão de funções e pessoas de escala
 ├── hooks/            # Hooks customizados (Ex: useAuth fornecendo o RBAC em tempo real)
 ├── lib/              # Inicialização do banco de dados (Supabase Client)
 ├── types/            # Tipagens globais e Definições de esquema de Banco em TypeScript
