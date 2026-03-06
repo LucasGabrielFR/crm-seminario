@@ -5,9 +5,23 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.1] - 2026-03-04
+## [1.3.0] - 2026-03-06
 
 ### Adicionado
+- **Módulo Acadêmico**: Lançamento completo do sistema acadêmico para gestão de cursos, disciplinas, turmas e horários.
+- **Gestão de Grade Curricular**: Administradores podem cadastrar cursos e vincular múltiplas disciplinas a eles.
+- **Gestão de Turmas e Horários**: Criação de turmas com definição de semestre, professor e horários semanais parametrizáveis (dia da semana, início, término e sala).
+- **Portal do Professor**: Visão dedicada para professores gerenciarem suas turmas, alunos matriculados, lançarem notas (N1, N2) e frequências.
+- **Boletim do Aluno**: Visão individualizada para os seminaristas acompanharem suas notas, médias, aprovações, faltas e grade semanal.
+- **Grade de Horários Global**: Nova visualização dinâmica e inteligente dos horários do seminário, filtrada por perfil (Admin vê todos com alertas de choque de horário, Professores e Alunos veem as suas respectivas agendas).
+- **Exportação de PDF Inteligente**: Otimização nativa via CSS para geração de PDF dos relatórios e grades, que automaticamente ajusta a impressão para modo claro, oculta menus laterais inferiores e ajusta o layout para orientação Paisagem com 100% de aproveitamento de tela.
+- **Configurações Acadêmicas**: Nova aba para Administradores definirem o peso das notas na composição da média final do estudante (ex: N1 com peso 4 e N2 com peso 6) e ajustarem a média mínima global para aprovação.
+
+### Alterado
+- **Controle de Acessos Acadêmico**: Lógica implementada para que apenas Administradores, Formadores e Professores acessem telas de criação de conteúdo. O menu `is_teacher` integrado do perfil agora é respeitado na navegação.
+- **Cálculo de Notas em Tempo Real**: Os boletins dos alunos agora reagem instantaneamente e assincronamente a qualquer mudança global cadastrada nas configurações (ex: mudança do sistema de pesos das provas refletindo recalculada nas listas).
+
+## [1.2.1] - 2026-03-04
 - **Função de Bibliotecário**: Implementação de cargos específicos para gestão da biblioteca. Agora qualquer usuário pode ser promovido a Bibliotecário.
 - **Sistema de Solicitações**: Usuários regulares agora podem solicitar empréstimos de livros através de uma nova interface de solicitações.
 - **Fluxo de Aprovação**: Bibliotecários possuem uma aba exclusiva para gerenciar (aprovar/negar) solicitações de empréstimo.
