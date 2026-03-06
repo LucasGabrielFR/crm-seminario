@@ -5,6 +5,7 @@ import { Layout } from './components/Layout';
 import { PeoplePage } from './features/users/PeoplePage';
 import { LibraryPage } from './features/library/LibraryPage';
 import { AcademicPage } from './features/academic/AcademicPage';
+import { ScalesPage } from './features/scales/ScalesPage';
 
 // Placeholder for Dashboard
 const Dashboard = () => (
@@ -102,6 +103,19 @@ function App() {
             session ? (
               <Layout>
                 <AcademicPage />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } 
+        />
+
+        <Route 
+          path="/scales" 
+          element={
+            session ? (
+              <Layout>
+                <ScalesPage />
               </Layout>
             ) : (
               <Navigate to="/login" />

@@ -5,6 +5,19 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-03-07
+
+### Lançamento do Gerador de Escalas Inteligente
+- **Módulo de Escalas**: Implementação completa de um sistema independente de geração de escalas, com banco de dados próprio para membros e funções.
+- **Automação com Algoritmo de Rotação**: Novo algoritmo que gera escalas automaticamente respeitando regras de:
+  - Não repetir a mesma pessoa em múltiplas funções no mesmo dia.
+  - Maximizar a alternância de funções entre membros ao longo das semanas.
+  - Balancear a carga de trabalho de forma justa entre todos os disponíveis.
+- **Interface Pública e Flexível**: Acesso liberado para qualquer usuário autenticado gerenciar e visualizar escalas, permitindo colaboração total entre usuários.
+- **Customização Completa**: Suporte para definição manual da quantidade de semanas, dias da semana específicos, subconjunto de pessoas e funções para cada escala gerada.
+- **Edição Pós-Geração**: Possibilidade de trocar manualmente qualquer atribuição gerada pelo algoritmo diretamente na tabela de detalhes.
+- **Impressão Otimizada (PDF)**: Layout de visualização de escala otimizado para impressão, ocultando elementos de interface e maximizando a clareza das atribuições por semana e dia.
+
 ## [1.3.1] - 2026-03-06
 
 ### Segurança e Controle de Acesso (RBAC)

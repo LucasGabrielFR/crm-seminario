@@ -10,7 +10,8 @@ import {
   Sun,
   Moon,
   BookOpen,
-  GraduationCap
+  GraduationCap,
+  CalendarRange
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useTheme } from '../hooks/useTheme';
@@ -45,6 +46,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     },
     { name: 'Biblioteca', path: '/library', icon: BookOpen, visible: true },
     { name: 'Acadêmico', path: '/academic', icon: GraduationCap, visible: true },
+    { name: 'Escalas', path: '/scales', icon: CalendarRange, visible: true },
   ].filter(item => item.visible);
 
   const isActive = (path: string) => location.pathname === path;
