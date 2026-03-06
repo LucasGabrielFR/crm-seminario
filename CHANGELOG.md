@@ -5,7 +5,17 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.0] - 2026-03-07
+
+## [1.5.0] - 2026-03-06
+
+### Novo Dashboard Global e Inteligente
+- **Interface Analítica Personalizada**: Implementação de um dashboard dinâmico que adapta as informações apresentadas de acordo com o perfil/role do usuário logado.
+- **Métricas para Administradores**: Visão institucional completa com contagem de seminaristas, turmas, professores e escalas ativas.
+- **Painel do Bibliotecário**: Indicadores específicos para gestão de acervo, incluindo total de livros, solicitações aguardando aprovação e alertas em tempo real de empréstimos atrasados.
+- **Sistema de Alertas Visuais**: Introdução de badges pulsantes para notificações críticas (empréstimos vencidos e novas solicitações).
+- **Atalhos de Acesso Rápido**: Menu de navegação simplificado para os principais módulos do sistema diretamente na home.
+- **Melhoria de UI/UX**: Uso de micro-interações, cores semânticas e design baseado em cards para maior clareza de dados.
+
 
 ### Lançamento do Gerador de Escalas Inteligente
 - **Módulo de Escalas**: Implementação completa de um sistema independente de geração de escalas, com banco de dados próprio para membros e funções.
